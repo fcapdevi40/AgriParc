@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AgriParc – Gestion du matériel</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="AgriParc">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🚜%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#f2f5f1;--card:#fff;--tx:#17211a;--mu:#68756b;--ac:#1f7a45;--on:#fff;--ac2:#e5f2e9;--bd:#e3e8e2;--wa:#c2410c;--wb:#ffedd5;--nb:rgba(255,255,255,.9);--sh:0 1px 2px rgba(20,40,25,.06),0 10px 24px -14px rgba(20,40,25,.28);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1511;--card:#18211b;--tx:#e9f0ea;--mu:#93a396;--ac:#4ade80;--on:#06210f;--ac2:#1d3326;--bd:#27342b;--wa:#fdba74;--wb:#3b2414;--nb:rgba(24,33,27,.9);--sh:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1511;--card:#18211b;--tx:#e9f0ea;--mu:#93a396;--ac:#4ade80;--on:#06210f;--ac2:#1d3326;--bd:#27342b;--wa:#fdba74;--wb:#3b2414;--nb:rgba(24,33,27,.9);--sh:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--card);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--nb);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);z-index:5}
+.w{max-width:920px;margin:0 auto;padding:0 14px}
+h1{font-size:1.2rem;font-weight:800;letter-spacing:-.01em;margin:0;padding:12px 0 4px}
+header .m{padding-bottom:8px;min-height:1.6em}
+main{padding:16px 0 120px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:center;gap:4px;background:var(--nb);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--bd);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;max-width:130px;display:grid;justify-items:center;gap:1px;background:none;border:0;color:var(--mu);font:inherit;font-size:.68rem;font-weight:600;padding:6px 2px;border-radius:14px;cursor:pointer}
+nav button span{font-size:1.3rem;line-height:1.1}
+nav button.on{color:var(--ac);background:var(--ac2)}
+.chips{display:grid;gap:6px;margin-bottom:14px}
+.chips button{display:grid;gap:2px;justify-items:center;min-width:0;padding:8px 4px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:14px;font:inherit;cursor:pointer;box-shadow:var(--sh)}
+.chips button.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
+.ci{display:flex;gap:4px;align-items:baseline;font-size:1.1rem;line-height:1.1}
+.ci em{font-style:normal;font-size:.7rem;font-weight:700;opacity:.75}
+.cn{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.68rem;font-weight:600}
+.g{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:16px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:var(--sh)}
+.g .c{margin:0;background:linear-gradient(160deg,var(--card) 55%,var(--ac2))}
+.k{font-size:1.6rem;font-weight:800;letter-spacing:-.02em}.m{color:var(--mu);font-size:.85rem}
+h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);font-weight:700;margin:22px 0 8px}
+form{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:var(--sh)}
+details{margin-bottom:10px}
+summary{cursor:pointer;list-style:none;padding:12px 14px;background:var(--card);border:1px solid var(--bd);border-radius:14px;font-weight:600;box-shadow:var(--sh);margin-bottom:8px}
+summary::-webkit-details-marker{display:none}
+label{font-size:.75rem;color:var(--mu);font-weight:600;display:grid;gap:4px}
+input,select{font:inherit;padding:11px 12px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx);width:100%}
+input:focus,select:focus{outline:2px solid var(--ac);outline-offset:1px}
+.b{border:0;background:var(--ac);color:var(--on);padding:10px 16px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+.b:active{transform:scale(.97)}
+.b.s{background:var(--ac2);color:var(--tx);border:1px solid var(--bd);padding:7px 13px;font-size:.85rem}
+.b.d{background:transparent;color:var(--wa);border:1px solid var(--bd);padding:7px 13px;font-size:.85rem}
+.r{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.t{display:inline-block;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--ac2);color:var(--ac)}
+.t.w{background:var(--wb);color:var(--wa)}
+.bar{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--ac),#86efac);margin-top:4px}
+.hh{width:120px}.ac{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+@media(max-width:560px){h1 .m{display:none}}
+</style></head><body>
+<header><div class="w"><div class="r"><h1>🚜 AgriParc <span class="m">– matériel de l’exploitation</span></h1><div id="hd" class="ac" style="margin:0"><label class="b s" style="cursor:pointer">⬆ Importer<input type="file" accept=".xlsx" data-imp="1" style="display:none"></label><button class="b s" data-a="xl">⬇ Export Excel</button></div></div>
+<div class="m"><span id="sy"></span> <span id="lo"></span> <span id="msg"></span></div></div></header>
+<main class="w" id="app"></main>
+<nav id="nav"></nav>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ===== CONFIGURATION FIREBASE : collez ici les valeurs de votre projet (voir les instructions) ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyCLhtLAS8T7Tu5MoJjoXBmEwu4gNvCIDUA",
+  authDomain: "earl-parc.firebaseapp.com",
+  projectId: "earl-parc",
+  storageBucket: "earl-parc.firebasestorage.app",
+  messagingSenderId: "260162955157",
+  appId: "1:260162955157:web:6cf426be01191e98dc389c"
+};
+/* ================================================================================================== */
+const USE_FB=!!FB.apiKey;
+const K="agriparc:v8",TABS=[["dash","📊","Accueil"],["mach","🚜","Machines"],["plan","🗓️","À prévoir"],["stock","📦","Stock"],["int","🛠️","Coûts"]];
+const PREC=["Déchaumeur","Herse","Charrue","Semoir","Pulvérisateur","Rouleau","Épandeur","Faucheuse","Remorque","Chargeur","Cover-crop","Décompacteur","Broyeur"];
+const IT=["Panne","Entretien","Réparation","Amélioration","Achat"];
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const eur=n=>Number(n||0).toLocaleString("fr-FR",{style:"currency",currency:"EUR"});
+const today=()=>new Date().toISOString().slice(0,10);
+const fd=d=>d?d.split("-").reverse().join("/"):"sans date";
+const pad=d=>d.length===4?d+"-01-01":d.length===7?d+"-01":d;
+const DEFCATS=[{"n":"🚜 Tracteurs","t":["Tracteurs agricoles","Enjambeurs","Tracteurs compacts"]},{"n":"🚛 VL","t":["Pick-up","Utilitaires","Camions","Quads"]},{"n":"🏗️ TP","t":["Pelle mécanique","Mini-pelle","Chargeuse","Télescopique"]},{"n":"🌾 Récolte","t":["Moissonneuse","Ensileuse","Automoteur de pulvérisation"]},{"n":"🔧 Outils","t":["Pulvérisateur","Semoir","Charrue","Déchaumeur","Broyeur","Épandeur","Faucheuse"]},{"n":"🚚 Transport","t":["Benne","Plateau","Porte-engins","Bétaillère"]},{"n":"🐄 Élevage","t":["Mélangeuse","Pailleuse","Désileuse","Racloir","Distributeur d’aliments","Laiterie / tank à lait","Distributrice"]},{"n":"🏠 Autres","t":["Groupe électrogène","Séchoir","Pompe","Installation d’irrigation","Irrigation","Divers","Bois"]}];
+function blank(){return{m:[],s:[],p:[],i:[],cats:JSON.parse(JSON.stringify(DEFCATS))}}
+let S,tab="dash",armed=null,editId=null,vid=null,fc="",fo="",eiId=null,epId=null,mg=false,imp=null;
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(!S||!S.cats)S=blank();
+const COLS=["m","p","i","s"],enc=o=>JSON.stringify(o,Object.keys(o).sort());
+let FS=null,AUTH=null,authed=false,subs=[],last={m:{},p:{},i:{},s:{}},lastCfg=null,pend=false;
+const sy=t=>{const o=document.getElementById("sy");if(o)o.textContent=t};
+const cache=()=>{if(USE_FB)return;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const fail=e=>{sy("⚠ Non synchronisé");msg(e&&e.code==="permission-denied"?"Accès refusé : vérifiez votre compte et les règles Firestore.":"Erreur de synchronisation.")};
+function save(){cache();if(!FS||!authed)return;
+for(const c of COLS){const cur={};S[c].forEach((x,n)=>{if(x.o==null)x.o=Date.now()+n;cur[x.id]=enc(x)});
+S[c].forEach(x=>{if(last[c][x.id]!==cur[x.id]){last[c][x.id]=cur[x.id];FS.collection(c).doc(x.id).set({...x}).catch(fail)}});
+Object.keys(last[c]).forEach(id=>{if(!(id in cur)){delete last[c][id];FS.collection(c).doc(id).delete().catch(fail)}})}
+const cj=JSON.stringify(S.cats);if(cj!==lastCfg){lastCfg=cj;FS.doc("cfg/cats").set({v:cj}).catch(fail)}}
+function refresh(){const a=document.activeElement;if(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName)&&document.getElementById("app").contains(a))pend=true;else render()}
+function listen(){sy("⏳ Chargement…");
+COLS.forEach(c=>subs.push(FS.collection(c).onSnapshot(sn=>{if(sn.metadata.fromCache&&sn.empty)return;
+S[c]=sn.docs.map(d=>({...d.data()})).sort((a,b)=>(a.o||0)-(b.o||0));last[c]={};S[c].forEach(x=>last[c][x.id]=enc(x));
+sy(sn.metadata.hasPendingWrites?"⏳ Envoi…":sn.metadata.fromCache?"📴 Hors ligne (copie locale)":"☁ Synchronisé");refresh()},fail)));
+subs.push(FS.doc("cfg/cats").onSnapshot(sn=>{if(sn.exists&&sn.data().v){S.cats=JSON.parse(sn.data().v);lastCfg=sn.data().v;refresh()}},fail))}
+const loginHtml=()=>`<div class="c" style="max-width:420px;margin:30px auto"><h2 style="margin-top:0">🔐 Connexion</h2><form id="fa" style="grid-template-columns:1fr"><label>E-mail<input name="email" type="email" required autocomplete="username"></label><label>Mot de passe<input name="pw" type="password" required autocomplete="current-password"></label><button class="b">Se connecter</button></form><p class="m">Accès réservé : les comptes sont créés dans la console Firebase.</p></div>`;
+function boot(){if(!USE_FB){sy("📴 Mode local (Firebase non configuré)");return}
+if(typeof firebase==="undefined"){msg("Impossible de joindre Firebase (réseau ?).");return}
+firebase.initializeApp(FB);AUTH=firebase.auth();FS=firebase.firestore();FS.enablePersistence({synchronizeTabs:true}).catch(()=>{});
+AUTH.onAuthStateChanged(u=>{subs.forEach(f=>f());subs=[];last={m:{},p:{},i:{},s:{}};lastCfg=null;authed=!!u;S=blank();if(u)listen();else sy("");render()});
+document.addEventListener("focusout",()=>{if(pend)setTimeout(()=>{const a=document.activeElement;if(pend&&!(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))){pend=false;render()}},700)})}
+const msg=t=>{const o=document.getElementById("msg");o.textContent=t;setTimeout(()=>o.textContent="",6000)};
+const mb=id=>S.m.find(x=>x.id===id);
+const mn=id=>(mb(id)||{nom:"(supprimée)"}).nom;
+const catOf=id=>(mb(id)||{}).cat||"";
+const ok=c=>!fc||c===fc;
+const MS=()=>S.m.filter(m=>ok(m.cat));
+const un=m=>m.u||"h",th=m=>un(m)==="km"?1000:50,left=m=>m.last+m.iv-m.h;
+const st=m=>{const l=left(m);return l<=0?["En retard de "+(-l)+" "+un(m),1]:["Dans "+l+" "+un(m),l<=th(m)?1:0]};
+const late=p=>p.d&&p.d<today();
+const opts=(a,s)=>a.map(x=>`<option${x===s?" selected":""}>${esc(x)}</option>`).join("");
+const mopts=()=>S.m.map(m=>`<option value="${m.id}">${esc(m.nom)}</option>`).join("");
+const todo=()=>S.p.filter(p=>!p.done).sort((a,b)=>(a.d||"9").localeCompare(b.d||"9"));
+const hist=a=>[...a].sort((p,q)=>q.d.localeCompare(p.d));
+const tag=p=>p.k==="A"?"Amélioration":"Entretien prévisionnel";
+const meta=m=>{const y=new Date().getFullYear();return`${[m.type,m.prec].filter(Boolean).map(esc).join(" – ")||"Sans type"} · mise en circulation ${m.an||"?"}${m.an?" ("+(y-m.an)+" ans)":""}${m.prop?" · "+esc(m.prop):""}${m.orig?" · orig. "+esc(m.orig):""}${m.val?" · "+eur(m.val):""}${m.note?" · "+esc(m.note):""}`};
+const pitem=p=>p.id===epId?pedit(p):pview(p),pview=p=>`<div class="c"><div class="r"><b>${esc(p.desc)}</b>${late(p)?'<span class="t w">en retard</span>':""}</div><div class="m">${esc(mn(p.mid))} · <span class="t ${p.k==="A"?"":"w"}">${tag(p)}</span> · échéance ${fd(p.d)} · estimé ${eur(p.c)}</div><div class="ac"><label>Réalisé le<input type="date" id="pd${p.id}" value="${today()}" style="width:150px"></label><label>Coût réel (€)<input type="number" id="pc${p.id}" min="0" step="0.01" value="${p.c}" style="width:110px"></label><button class="b s" data-a="pdone" data-id="${p.id}">✔ Réalisé</button><button class="b s" data-a="ep" data-id="${p.id}">✎</button><button class="b d" data-a="dp" data-id="${p.id}">✕</button></div></div>`;
+const pedit=p=>`<form id="fq"><input type="hidden" name="id" value="${p.id}"><label>Machine<select name="mid">${S.m.map(m=>`<option value="${m.id}"${m.id===p.mid?" selected":""}>${esc(m.nom)}</option>`).join("")}</select></label><label>Nature<select name="k"><option value="E"${p.k==="E"?" selected":""}>Entretien prévisionnel</option><option value="A"${p.k==="A"?" selected":""}>Amélioration à prévoir</option></select></label><label>Description<input name="desc" required value="${esc(p.desc)}"></label><label>Échéance<input name="d" type="date" value="${esc(p.d)}"></label><label>Coût estimé (€)<input name="c" type="number" min="0" step="0.01" value="${p.c}"></label><button class="b">Enregistrer</button><button type="button" class="b s" data-a="epcancel">Annuler</button></form>`;
+const hitem=x=>x.id===eiId?hedit(x):hview(x),hview=x=>`<div class="c r"><div><b>${esc(mn(x.mid))}</b> <span class="t ${x.t==="Panne"?"w":""}">${esc(x.t)}</span><div class="m">${fd(x.d)} · ${esc(x.desc)}</div></div><div class="ac" style="margin:0"><b>${eur(x.c)}</b><button class="b s" data-a="ei" data-id="${x.id}">✎</button><button class="b d" data-a="di" data-id="${x.id}">✕</button></div></div>`;
+const hedit=x=>`<form id="fe"><input type="hidden" name="id" value="${x.id}"><label>Machine<select name="mid">${S.m.map(m=>`<option value="${m.id}"${m.id===x.mid?" selected":""}>${esc(m.nom)}</option>`).join("")}</select></label><label>Type<select name="t">${opts(IT,x.t)}</select></label><label>Date${x.d.length<10?` <span class="m">(approx. d’origine : ${fd(x.d)})</span>`:""}<input name="d" type="date" value="${pad(x.d)}"></label><input type="hidden" name="d0" value="${esc(x.d)}"><label>Description<input name="desc" required value="${esc(x.desc)}"></label><label>Coût (€)<input name="c" type="number" min="0" step="0.01" value="${x.c}"></label><button class="b">Enregistrer</button><button type="button" class="b s" data-a="ecancel">Annuler</button></form>`;
+const mv=(k,i,j)=>`<button class="b s" data-a="mv" data-k="${k}" data-i="${i}" data-j="${j}" data-d="-1">↑</button><button class="b s" data-a="mv" data-k="${k}" data-i="${i}" data-j="${j}" data-d="1">↓</button>`;
+const mgmt=()=>S.cats.map((c,i)=>`<div class="c"><div class="ac" style="margin:0"><input style="max-width:250px;font-weight:600" data-rn="c" data-i="${i}" value="${esc(c.n)}">${mv("c",i,0)}<button class="b d" data-a="dl" data-k="c" data-i="${i}">✕</button></div>${c.t.map((t,j)=>`<div class="ac" style="margin-left:16px"><input style="max-width:230px" data-rn="t" data-i="${i}" data-j="${j}" value="${esc(t)}">${mv("t",i,j)}<button class="b d" data-a="dl" data-k="t" data-i="${i}" data-j="${j}">✕</button></div>`).join("")}</div>`).join("");
+const norm=s=>String(s==null?"":s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z0-9]+/g," ").trim().toLowerCase();
+const pdt=v=>{if(v==null||v==="")return"";if(typeof v==="number")return v>30000?new Date(Math.round((v-25569)*864e5)).toISOString().slice(0,10):String(v);const s=String(v).trim();let m;
+if(m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/))return`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+if(m=s.match(/^(\d{1,2})\/(\d{4})$/))return`${m[2]}-${m[1].padStart(2,"0")}`;
+return/^\d{4}(-\d{2}){0,2}$/.test(s)?s:""};
+const place=(cat,type,prec)=>{const nc=norm(cat),nt=norm(type),np=norm(prec),f=c=>c.t.find(t=>norm(t)===nt||norm(t)===np)||"";
+const c=S.cats.find(x=>norm(x.n)===nc)||(nc.length>3?S.cats.find(x=>norm(x.n).includes(nc)||nc.includes(norm(x.n))):null);
+if(c)return[c.n,f(c)];for(const x of S.cats){const t=f(x);if(t)return[x.n,t]}
+if(nc){const n=String(cat).trim();S.cats.push({n,t:[]});return[n,""]}return[S.cats[S.cats.length-1].n,""]};
+const rows=k=>imp.wb.Sheets[k]?XLSX.utils.sheet_to_json(imp.wb.Sheets[k],{defval:""}):[];
+const impPanel=()=>`<div class="c"><b>⬆ Import : ${esc(imp.name)}</b><div class="m">${rows("Machines").length} machines · ${rows("À prévoir").length} travaux à prévoir · ${rows("Historique").length} opérations · ${rows("Stock").length} articles de stock</div><div class="ac"><button class="b s" data-a="imp-add">Ajouter à mes données</button><button class="b d" data-a="imp-rep">${armed==="imp"?"Confirmer : tout remplacer ?":"Remplacer mes données"}</button><button class="b s" data-a="imp-no">Annuler</button></div><div class="m">« Ajouter » ignore les machines et opérations déjà présentes.</div></div>`;
+function applyImp(mode){if(mode==="rep"){S.m=[];S.p=[];S.i=[];S.s=[]}
+const by={};S.m.forEach(m=>by[norm(m.nom)]=m);let nm=0,np=0,ni=0,ns=0;
+rows("Machines").forEach(r=>{const k=norm(r["Nom"]);if(!k||by[k])return;const[c,t]=place(r["Catégorie"],r["Type"],r["Précision"]);
+const m={id:uid(),nom:String(r["Nom"]).trim(),cat:c,type:t,prec:String(r["Précision"]||""),an:+r["Année"]||0,h:+r["Compteur"]||0,u:r["Unité"]==="km"?"km":"h",iv:+r["Entretien tous les"]||0,last:+r["Dernier entretien à"]||0,prop:String(r["Propriétaire"]||""),orig:String(r["Orig."]||""),val:+r["Valeur estimée (€)"]||0,note:String(r["Note"]||"")};S.m.push(m);by[k]=m;nm++});
+const key=x=>x.mid+"|"+x.d+"|"+x.desc,hp=new Set(S.p.map(key)),hi=new Set(S.i.map(key));
+rows("À prévoir").forEach(r=>{const m=by[norm(r["Machine"])];if(!m)return;const x={id:uid(),mid:m.id,k:/^Am/.test(r["Nature"])?"A":"E",desc:String(r["Description"]),d:pdt(r["Échéance"]),c:+r["Coût estimé (€)"]||0};if(!hp.has(key(x))){S.p.push(x);hp.add(key(x));np++}});
+rows("Historique").forEach(r=>{const m=by[norm(r["Machine"])];if(!m)return;const x={id:uid(),mid:m.id,t:r["Type"]||"Entretien",d:pdt(r["Date"]),desc:String(r["Description"]),c:+r["Coût (€)"]||0};if(!hi.has(key(x))){S.i.push(x);hi.add(key(x));ni++}});
+rows("Stock").forEach(r=>{if(!r["Article"]||S.s.some(s=>norm(s.nom)===norm(r["Article"])))return;S.s.push({id:uid(),nom:String(r["Article"]),cat:place(r["Catégorie"],"","")[0],q:+r["Quantité"]||0,u:r["Unité"]||"pièce",min:+r["Seuil"]||0});ns++});
+imp=null;vid=editId=eiId=epId=null;msg(`Import terminé : ${nm} machines, ${np} à prévoir, ${ni} opérations, ${ns} articles.`)}
+const cparts=n=>{const m=String(n).match(/^(\p{Extended_Pictographic}\uFE0F?)\s*(.*)$/u);return m?[m[1],m[2]||n]:["📁",n]};
+const chips=()=>{const l=[{n:""}].concat(S.cats);return`<div class="chips" style="grid-template-columns:repeat(${Math.ceil(l.length/2)},1fr)">${l.map(c=>{const q=c.n?cparts(c.n):["📋","Toutes"],k=c.n?S.m.filter(m=>m.cat===c.n).length:S.m.length;return`<button class="${c.n===fc?"on":""}" data-c="${esc(c.n)}"><span class="ci">${q[0]}<em>${k}</em></span><span class="cn">${esc(q[1])}</span></button>`}).join("")}</div>`};
+const fpForm=mid=>`<form id="fp">${mid?`<input type="hidden" name="mid" value="${mid}">`:`<label>Machine<select name="mid" required>${mopts()}</select></label>`}<label>Nature<select name="k"><option value="E">Entretien prévisionnel</option><option value="A">Amélioration à prévoir</option></select></label><label>Description<input name="desc" required></label><label>Échéance<input name="d" type="date"></label><label>Coût estimé (€)<input name="c" type="number" min="0" step="0.01" value="0"></label><button class="b">Ajouter</button></form>`;
+const fiForm=mid=>`<form id="fi">${mid?`<input type="hidden" name="mid" value="${mid}">`:`<label>Machine<select name="mid" required>${mopts()}</select></label>`}<label>Type<select name="t">${opts(IT)}</select></label><label>Date<input name="d" type="date" value="${today()}"></label><label>Description<input name="desc" required></label><label>Coût (€)<input name="c" type="number" min="0" step="0.01" value="0"></label><button class="b">Enregistrer</button></form>`;
+function dash(){
+const ms=MS(),ids=new Set(ms.map(m=>m.id)),ml=ms.filter(m=>m.iv>0&&left(m)<=th(m)),low=S.s.filter(x=>ok(x.cat)&&x.q<=x.min),td=todo().filter(p=>ids.has(p.mid)),is=S.i.filter(x=>ids.has(x.mid));
+const per=ms.map(m=>({n:m.nom,c:S.i.filter(x=>x.mid===m.id).reduce((a,x)=>a+x.c,0)})).filter(p=>p.c>0).sort((a,b)=>b.c-a.c).slice(0,8),mx=Math.max(1,...per.map(p=>p.c)),lt=td.filter(late);
+return chips()+`<div class="g"><div class="c"><div class="k">${ms.length}</div><div class="m">machines</div></div>
+<div class="c"><div class="k">${td.length}</div><div class="m">travaux à prévoir (${eur(td.reduce((a,p)=>a+p.c,0))})</div></div>
+<div class="c"><div class="k">${eur(is.reduce((a,x)=>a+x.c,0))}</div><div class="m">coûts cumulés</div></div>
+<div class="c"><div class="k">${eur(ms.reduce((a,m)=>a+(m.val||0),0))}</div><div class="m">valeur estimée</div></div></div>
+<h2>À surveiller</h2>${ml.length+low.length+lt.length?"":'<div class="c m">Rien à signaler 👍</div>'}
+${ml.map(m=>`<div class="c r"><span>🔧 ${esc(m.nom)}</span><span class="t w">Entretien : ${st(m)[0]}</span></div>`).join("")}${lt.map(pitem).join("")}
+${low.map(x=>`<div class="c r"><span>📦 ${esc(x.nom)}</span><span class="t w">${x.q} ${esc(x.u)} (seuil ${x.min})</span></div>`).join("")}
+<h2>Coûts les plus élevés</h2><div class="c">${per.map(p=>`<div class="r"><span>${esc(p.n)}</span><b>${eur(p.c)}</b></div><div class="bar" style="width:${p.c/mx*100}%"></div>`).join("")||'<span class="m">Aucune dépense enregistrée</span>'}</div>`}
+function mfm(){const cn=S.cats.map(c=>c.n),e=mb(editId)||{nom:"",type:"",cat:fc||cn[0],prec:"",an:"",h:0,u:"h",iv:0,orig:"",prop:"EARL",val:0,note:""},tl=(S.cats.find(c=>c.n===e.cat)||{t:[]}).t;
+return`<form id="fm"><label>Nom / modèle<input name="nom" required value="${esc(e.nom)}"></label><label>Catégorie<select name="cat" data-cs="1">${opts(cn,e.cat)}</select></label><label>Type<select name="type"><option value="">— aucun —</option>${opts(tl,e.type)}</select></label>
+<label>Précision<input name="prec" placeholder="herse, vibroculteur…" value="${esc(e.prec)}"></label>
+<label>Année de mise en circulation<input name="an" type="number" min="1900" max="${new Date().getFullYear()}" value="${e.an||""}"></label>
+<label>Compteur actuel<input name="h" type="number" min="0" value="${e.h}"></label><label>Unité du compteur<select name="u"><option value="h">heures</option><option value="km"${e.u==="km"?" selected":""}>km</option></select></label>
+<label>Entretien tous les (h ou km, 0 = aucun)<input name="iv" type="number" min="0" value="${e.iv}"></label>
+<label>Orig.<input name="orig" placeholder="FC, OC…" value="${esc(e.orig)}"></label><label>Propriétaire<input name="prop" placeholder="EARL…" value="${esc(e.prop)}"></label>
+<label>Valeur estimée (€)<input name="val" type="number" min="0" value="${e.val||0}"></label><label>Note<input name="note" value="${esc(e.note)}"></label>
+<button class="b">${editId?"Enregistrer":"Ajouter"}</button>${editId?'<button type="button" class="b s" data-a="cancel">Annuler</button>':""}</form>`}
+const mcard=m=>{const s=m.iv>0?st(m):null;return`<div class="c"><div class="r"><b>${esc(m.nom)}</b>${s?`<span class="t ${s[1]?"w":""}">Entretien : ${s[0]}</span>`:""}</div><div class="m">${meta(m)}</div>
+<div class="ac">${m.iv>0||m.h>0?`<label>Compteur (${un(m)})<input class="hh" type="number" min="0" data-h="${m.id}" value="${m.h}"></label>`:""}<button class="b s" data-a="fiche" data-id="${m.id}">📋 Fiche</button><button class="b s" data-a="em" data-id="${m.id}">✎ Modifier</button>${m.iv>0?`<button class="b s" data-a="done" data-id="${m.id}">✔ Entretien fait</button>`:""}<button class="b d" data-a="dm" data-id="${m.id}">${armed===m.id?"Confirmer ?":"Supprimer"}</button></div></div>`};
+function mach(){if(vid&&mb(vid))return fiche(mb(vid));
+const ms=MS().filter(m=>!fo||m.prop===fo),owners=[...new Set(S.m.map(m=>m.prop).filter(Boolean))];
+return chips()+`<details${editId?" open":""}><summary>${editId?"✎ Modifier la machine":"＋ Ajouter une machine"}</summary>${mfm()}</details>
+<details${mg?" open":""}><summary>⚙ Gérer les catégories et les types</summary><form id="fl"><label>Je crée…<select name="kind"><option value="cat">une catégorie</option><option value="type">un type</option></select></label><label>Dans la catégorie (pour un type)<select name="pc">${opts(S.cats.map(c=>c.n))}</select></label><label>Nom<input name="nom" required></label><button class="b">Créer</button></form>
+<p class="m">Renommez dans les champs, réordonnez avec ↑ ↓ (l’ordre est repris partout), ✕ supprime un élément inutilisé.</p>${mgmt()}</details>
+<div class="r"><span class="m">${ms.length} machine(s)</span><select data-f="1" style="width:auto"><option value="">Tous propriétaires</option>${owners.map(o=>`<option${o===fo?" selected":""}>${esc(o)}</option>`).join("")}</select></div>`+
+S.cats.filter(c=>ok(c.n)).map(c=>{const a=ms.filter(m=>m.cat===c.n);if(!a.length)return"";const g=[...c.t,""].map(t=>{const b=a.filter(m=>t?m.type===t:!c.t.includes(m.type));return b.length?`<div class="m" style="margin:8px 0 4px;font-weight:600">${t?esc(t):"Sans type"} (${b.length})</div>`+b.map(mcard).join(""):""}).join("");return`<h2>${esc(c.n)} (${a.length})</h2>`+g}).join("")}
+function fiche(m){const is=hist(S.i.filter(x=>x.mid===m.id)),ps=todo().filter(p=>p.mid===m.id),s=m.iv>0?st(m):null;
+return`<div class="ac" style="margin:0 0 10px"><button class="b s" data-a="back">← Retour</button><button class="b s" data-a="em" data-id="${m.id}">✎ Modifier</button><button class="b s" data-a="xl" data-id="${m.id}">⬇ Export Excel</button></div>
+<div class="c"><div class="r"><b style="font-size:1.1rem">${esc(m.nom)}</b><span class="t">${esc(m.cat)}</span></div><div class="m">${meta(m)}</div>
+<div class="ac"><label>Compteur (${un(m)})<input class="hh" type="number" min="0" data-h="${m.id}" value="${m.h}"></label>${s?`<span class="t ${s[1]?"w":""}">Entretien : ${s[0]}</span><span class="m">tous les ${m.iv} ${un(m)} · dernier à ${m.last}</span><button class="b s" data-a="done" data-id="${m.id}">✔ Entretien fait</button>`:'<span class="m">Pas d’entretien programmé au compteur</span>'}</div></div>
+<div class="g"><div class="c"><div class="k">${eur(is.reduce((a,x)=>a+x.c,0))}</div><div class="m">coûts cumulés (${is.length} interventions)</div></div><div class="c"><div class="k">${ps.length}</div><div class="m">à prévoir (${eur(ps.reduce((a,p)=>a+p.c,0))})</div></div></div>
+<h2>À prévoir</h2>${ps.map(pitem).join("")||'<div class="c m">Rien de prévu.</div>'}${fpForm(m.id)}
+<h2>Historique</h2>${is.map(hitem).join("")||'<div class="c m">Aucune intervention enregistrée.</div>'}${fiForm(m.id)}`}
+function plan(){const ids=new Set(MS().map(m=>m.id)),l=todo().filter(p=>ids.has(p.mid));
+return chips()+fpForm()+`<h2>À prévoir (${l.length})</h2>${l.map(pitem).join("")||'<div class="c m">Aucun travail prévu.</div>'}<p class="m">« Réalisé » enregistre le travail dans l’historique avec son coût estimé.</p>`}
+function stock(){return chips()+`<form id="fs"><label>Article<input name="nom" required></label><label>Catégorie<select name="cat">${opts(S.cats.map(c=>c.n),fc||S.cats[0].n)}</select></label><label>Quantité<input name="q" type="number" min="0" value="0"></label><label>Unité<input name="u" value="pièce"></label><label>Seuil d’alerte<input name="min" type="number" min="0" value="1"></label><button class="b">Ajouter</button></form><h2>Pièces et consommables</h2>`+
+S.s.filter(x=>ok(x.cat)).map(x=>`<div class="c r"><div><b>${esc(x.nom)}</b> ${x.q<=x.min?'<span class="t w">stock bas</span>':""}<div class="m">${esc(x.cat||"")} · seuil ${x.min} ${esc(x.u)}</div></div>
+<div class="ac" style="margin:0"><button class="b s" data-a="sm" data-id="${x.id}">−</button><b>${x.q} ${esc(x.u)}</b><button class="b s" data-a="sp" data-id="${x.id}">+</button><button class="b d" data-a="ds" data-id="${x.id}">${armed===x.id?"Confirmer ?":"✕"}</button></div></div>`).join("")}
+function inter(){const ids=new Set(MS().map(m=>m.id)),l=hist(S.i.filter(x=>ids.has(x.mid)));return chips()+fiForm()+`<h2>Historique (${l.length})</h2>`+l.map(hitem).join("")}
+function render(){const lo=document.getElementById("lo"),hd=document.getElementById("hd");if(lo)lo.innerHTML=USE_FB&&authed?'<button class="b s" data-a="logout">Déconnexion</button>':"";if(hd)hd.style.display=USE_FB&&!authed?"none":"";
+if(USE_FB&&!authed){document.getElementById("nav").innerHTML="";document.getElementById("app").innerHTML=loginHtml();return}
+document.getElementById("nav").innerHTML=TABS.map(t=>`<button class="${t[0]===tab?"on":""}" data-tab="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join("");
+document.getElementById("app").innerHTML=(imp?impPanel():"")+{dash,mach,plan,stock,int:inter}[tab]()}
+async function xl(only){
+if(typeof XLSX==="undefined"){msg("Export Excel indisponible (bibliothèque non chargée).");return}
+const ms=only?S.m.filter(m=>m.id===only):S.m,ids=new Set(ms.map(m=>m.id)),wb=XLSX.utils.book_new(),add=(n,r)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(r),n);
+add("Machines",[["Catégorie","Nom","Type","Précision","Année","Compteur","Unité","Entretien tous les","Dernier entretien à","Propriétaire","Orig.","Valeur estimée (€)","Note"],...ms.map(m=>[m.cat,m.nom,m.type,m.prec,m.an||"",m.h,un(m),m.iv||"",m.iv?m.last:"",m.prop,m.orig,m.val,m.note])]);
+add("À prévoir",[["Machine","Catégorie","Nature","Description","Échéance","Coût estimé (€)"],...todo().filter(p=>ids.has(p.mid)).map(p=>[mn(p.mid),catOf(p.mid),tag(p),p.desc,fd(p.d),p.c])]);
+add("Historique",[["Machine","Catégorie","Date","Type","Description","Coût (€)"],...hist(S.i.filter(x=>ids.has(x.mid))).map(x=>[mn(x.mid),catOf(x.mid),fd(x.d),x.t,x.desc,x.c])]);
+if(!only)add("Stock",[["Article","Catégorie","Quantité","Unité","Seuil"],...S.s.map(x=>[x.nom,x.cat,x.q,x.u,x.min])]);
+try{XLSX.writeFile(wb,(only?"fiche-"+mn(only).replace(/[^\w-]+/g,"-"):"parc-materiel")+".xlsx")}catch(e){msg("Export impossible.")}}
+document.addEventListener("click",e=>{
+const t=e.target.closest("[data-tab]");if(t){tab=t.dataset.tab;armed=editId=vid=eiId=epId=mg=null;render();return}
+const c=e.target.closest("[data-c]");if(c){fc=c.dataset.c;armed=null;render();return}
+const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a,id=b.dataset.id;
+if(a==="xl"){xl(id);return}
+if(a==="logout"){AUTH.signOut();return}
+if(a==="fiche"){vid=id;render();scrollTo(0,0);return}
+if(a==="back"){vid=null;render();return}
+if(a==="em"){editId=id;vid=null;tab="mach";render();scrollTo({top:0,behavior:"smooth"});return}
+if(a==="cancel"){editId=null;render();return}
+if(a==="ei"){eiId=id;render();return}
+if(a==="ecancel"){eiId=null;render();return}
+if(a==="ep"){epId=id;render();return}
+if(a==="epcancel"){epId=null;render();return}
+if(a==="imp-no"){imp=null;armed=null;render();return}
+if(a==="imp-add"||a==="imp-rep"){if(a==="imp-rep"&&armed!=="imp"){armed="imp";render();return}applyImp(a==="imp-rep"?"rep":"add");armed=null;save();render();return}
+if(a==="dl"){const i=+b.dataset.i,j=+b.dataset.j,c=S.cats[i],isC=b.dataset.k==="c",nm=isC?c.n:c.t[j],use=isC?S.m.some(m=>m.cat===c.n)||S.s.some(s=>s.cat===c.n):S.m.some(m=>m.cat===c.n&&m.type===nm);
+if(use){msg("« "+nm+" » est encore utilisé : changez d’abord la catégorie ou le type des éléments concernés.");mg=true;render();return}
+if(isC){if(S.cats.length>1){S.cats.splice(i,1);if(fc===nm)fc=""}}else c.t.splice(j,1);mg=true;save();render();return}
+if(a==="mv"){const i=+b.dataset.i,j=+b.dataset.j,dd=+b.dataset.d,l=b.dataset.k==="c"?S.cats:S.cats[i].t,k=b.dataset.k==="c"?i:j,n2=k+dd;if(n2>=0&&n2<l.length)[l[k],l[n2]]=[l[n2],l[k]];mg=true;save();render();return}
+if(a==="done"){const m=mb(id);m.last=m.h}
+else if(a==="sm"||a==="sp"){const x=S.s.find(x=>x.id===id);x.q=Math.max(0,x.q+(a==="sp"?1:-1))}
+else if(a==="pdone"){const p=S.p.find(x=>x.id===id);p.done=true;S.i.push({id:uid(),mid:p.mid,t:p.k==="A"?"Amélioration":"Entretien",d:(document.getElementById("pd"+id)||{}).value||today(),desc:p.desc,c:(cv=>cv&&cv.value!==""?+cv.value:p.c)(document.getElementById("pc"+id))});
+const m=mb(p.mid);if(m&&p.k==="E"&&m.iv>0)m.last=m.h}
+else if(a==="dp")S.p=S.p.filter(x=>x.id!==id);
+else if(a==="di")S.i=S.i.filter(x=>x.id!==id);
+else if(a==="dm"||a==="ds"){if(armed!==id){armed=id;render();return}
+if(a==="dm"){S.m=S.m.filter(x=>x.id!==id);S.i=S.i.filter(x=>x.mid!==id);S.p=S.p.filter(x=>x.mid!==id)}else S.s=S.s.filter(x=>x.id!==id);armed=null}
+save();render()});
+document.addEventListener("change",e=>{const d=e.target.dataset;
+if(d.h){mb(d.h).h=+e.target.value||0}else if(d.cs){const c=S.cats.find(x=>x.n===e.target.value);e.target.form.elements.namedItem("type").innerHTML='<option value="">— aucun —</option>'+opts(c?c.t:[],"");return}
+else if(d.imp){const f=e.target.files[0],inp=e.target;if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const wb=XLSX.read(rd.result,{type:"array"});if(!wb.Sheets["Machines"])throw 0;imp={wb,name:f.name};armed=null}catch(x){msg("Fichier non reconnu : il faut un export AgriParc avec une feuille « Machines ».")}inp.value="";render()};rd.readAsArrayBuffer(f);return}
+else if(d.rn){const i=+d.i,j=+d.j,v=e.target.value.trim(),c=S.cats[i];
+if(v){if(d.rn==="c"){if(!S.cats.some(x=>x.n===v)){const o=c.n;c.n=v;S.m.forEach(m=>{if(m.cat===o)m.cat=v});S.s.forEach(s=>{if(s.cat===o)s.cat=v});if(fc===o)fc=v}}else if(!c.t.includes(v)){const o=c.t[j];c.t[j]=v;S.m.forEach(m=>{if(m.cat===c.n&&m.type===o)m.type=v})}}mg=true}else if(d.f){fo=e.target.value;render();return}else return;save();render()});
+document.addEventListener("submit",e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target)),n=e.target.id;
+if(n==="fa"){AUTH.signInWithEmailAndPassword(f.email.trim(),f.pw).catch(()=>msg("E-mail ou mot de passe incorrect."));return}
+if(n==="fm"){const m=mb(editId),v={nom:f.nom,type:f.type,cat:f.cat,prec:f.prec,an:+f.an||0,h:+f.h||0,u:f.u,iv:+f.iv||0,orig:f.orig,prop:f.prop,val:+f.val||0,note:f.note};
+if(m){if(!m.iv&&v.iv)v.last=v.h;Object.assign(m,v);editId=null}else S.m.push({id:uid(),...v,last:v.h})}
+if(n==="fl"){const x=f.nom.trim();if(x){if(f.kind==="cat"){if(!S.cats.some(c=>c.n===x))S.cats.push({n:x,t:[]})}else{const c=S.cats.find(c=>c.n===f.pc);if(c&&!c.t.includes(x))c.t.push(x)}}mg=true}
+if(n==="fq"){const x=S.p.find(y=>y.id===f.id);if(x)Object.assign(x,{mid:f.mid,k:f.k,desc:f.desc,d:f.d,c:+f.c||0});epId=null}
+if(n==="fe"){const x=S.i.find(y=>y.id===f.id);if(x)Object.assign(x,{mid:f.mid,t:f.t,d:f.d===pad(f.d0)?f.d0:(f.d||f.d0),desc:f.desc,c:+f.c||0});eiId=null}
+if(n==="fs")S.s.push({id:uid(),nom:f.nom,cat:f.cat,q:+f.q||0,u:f.u||"pièce",min:+f.min||0});
+if(n==="fi")S.i.push({id:uid(),mid:f.mid,t:f.t,d:f.d||today(),desc:f.desc,c:+f.c||0});
+if(n==="fp")S.p.push({id:uid(),mid:f.mid,k:f.k,desc:f.desc,d:f.d,c:+f.c||0});
+save();render()});
+render();boot();
+</script></body></html>
