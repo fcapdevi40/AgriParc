@@ -60,14 +60,7 @@ input:focus,select:focus{outline:2px solid var(--ac);outline-offset:1px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 /* ===== CONFIGURATION FIREBASE : collez ici les valeurs de votre projet (voir les instructions) ===== */
-const firebaseConfig = {
-  apiKey: "AIzaSyCLhtLAS8T7Tu5MoJjoXBmEwu4gNvCIDUA",
-  authDomain: "earl-parc.firebaseapp.com",
-  projectId: "earl-parc",
-  storageBucket: "earl-parc.firebasestorage.app",
-  messagingSenderId: "260162955157",
-  appId: "1:260162955157:web:6cf426be01191e98dc389c"
-};
+const FB={apiKey:"AIzaSyCLhtLAS8T7Tu5MoJjoXBmEwu4gNvCIDUA",authDomain:"earl-parc.firebaseapp.com",projectId:"earl-parc",storageBucket:"earl-parc.firebasestorage.app",messagingSenderId:"260162955157",appId:"1:260162955157:web:6cf426be01191e98dc389c"};
 /* ================================================================================================== */
 const USE_FB=!!FB.apiKey;
 const K="agriparc:v8",TABS=[["dash","📊","Accueil"],["mach","🚜","Machines"],["plan","🗓️","À prévoir"],["stock","📦","Stock"],["int","🛠️","Coûts"]];
