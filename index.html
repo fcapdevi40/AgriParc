@@ -48,6 +48,12 @@ input:focus,select:focus{outline:2px solid var(--ac);outline-offset:1px}
 .t.w{background:var(--wb);color:var(--wa)}
 .bar{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--ac),#86efac);margin-top:4px}
 .hh{width:120px}.ac{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.tb{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.tb .b{padding:11px 8px;font-size:.85rem}
+.sr{display:flex;gap:8px;margin-bottom:8px}.sr input{flex:1;min-width:0}.sr select{width:auto;max-width:42%}
+.ml{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px}
+.mr{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--card);border:1px solid var(--bd);border-radius:12px;cursor:pointer;min-width:0}
+.mi{display:grid;min-width:0;flex:1}.mi b,.mi .m{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mi .m{font-size:.75rem}.mr .ch{color:var(--mu);font-size:1.2rem}
+.mh{margin:14px 0 6px}
 @media(max-width:560px){h1 .m{display:none}}
 </style></head><body>
 <header><div class="w"><div class="r"><h1>🚜 AgriParc <span class="m">– matériel de l’exploitation</span></h1><div id="hd" class="ac" style="margin:0"><label class="b s" style="cursor:pointer">⬆ Importer<input type="file" accept=".xlsx" data-imp="1" style="display:none"></label><button class="b s" data-a="xl">⬇ Export Excel</button></div></div>
@@ -74,7 +80,7 @@ const fd=d=>d?d.split("-").reverse().join("/"):"sans date";
 const pad=d=>d.length===4?d+"-01-01":d.length===7?d+"-01":d;
 const DEFCATS=[{"n":"🚜 Tracteurs","t":["Tracteurs agricoles","Enjambeurs","Tracteurs compacts"]},{"n":"🚛 VL","t":["Pick-up","Utilitaires","Camions","Quads"]},{"n":"🏗️ TP","t":["Pelle mécanique","Mini-pelle","Chargeuse","Télescopique"]},{"n":"🌾 Récolte","t":["Moissonneuse","Ensileuse","Automoteur de pulvérisation"]},{"n":"🔧 Outils","t":["Pulvérisateur","Semoir","Charrue","Déchaumeur","Broyeur","Épandeur","Faucheuse"]},{"n":"🚚 Transport","t":["Benne","Plateau","Porte-engins","Bétaillère"]},{"n":"🐄 Élevage","t":["Mélangeuse","Pailleuse","Désileuse","Racloir","Distributeur d’aliments","Laiterie / tank à lait","Distributrice"]},{"n":"🏠 Autres","t":["Groupe électrogène","Séchoir","Pompe","Installation d’irrigation","Irrigation","Divers","Bois"]}];
 function blank(){return{m:[],s:[],p:[],i:[],cats:JSON.parse(JSON.stringify(DEFCATS))}}
-let S,tab="dash",armed=null,editId=null,vid=null,fc="",fo="",eiId=null,epId=null,mg=false,imp=null;
+let S,tab="dash",armed=null,editId=null,vid=null,fc="",fo="",eiId=null,epId=null,mg=false,pa=false,fq="",imp=null;
 try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
 if(!S||!S.cats)S=blank();
 const COLS=["m","p","i","s"],enc=o=>JSON.stringify(o,Object.keys(o).sort());
@@ -164,17 +170,19 @@ return`<form id="fm"><label>Nom / modèle<input name="nom" required value="${esc
 <label>Orig.<input name="orig" placeholder="FC, OC…" value="${esc(e.orig)}"></label><label>Propriétaire<input name="prop" placeholder="EARL…" value="${esc(e.prop)}"></label>
 <label>Valeur estimée (€)<input name="val" type="number" min="0" value="${e.val||0}"></label><label>Note<input name="note" value="${esc(e.note)}"></label>
 <button class="b">${editId?"Enregistrer":"Ajouter"}</button>${editId?'<button type="button" class="b s" data-a="cancel">Annuler</button>':""}</form>`}
-const mcard=m=>{const s=m.iv>0?st(m):null;return`<div class="c"><div class="r"><b>${esc(m.nom)}</b>${s?`<span class="t ${s[1]?"w":""}">Entretien : ${s[0]}</span>`:""}</div><div class="m">${meta(m)}</div>
-<div class="ac">${m.iv>0||m.h>0?`<label>Compteur (${un(m)})<input class="hh" type="number" min="0" data-h="${m.id}" value="${m.h}"></label>`:""}<button class="b s" data-a="fiche" data-id="${m.id}">📋 Fiche</button><button class="b s" data-a="em" data-id="${m.id}">✎ Modifier</button>${m.iv>0?`<button class="b s" data-a="done" data-id="${m.id}">✔ Entretien fait</button>`:""}<button class="b d" data-a="dm" data-id="${m.id}">${armed===m.id?"Confirmer ?":"Supprimer"}</button></div></div>`};
+const mrow=m=>{const s=m.iv>0?st(m):null;return`<div class="mr" data-a="fiche" data-id="${m.id}"><div class="mi"><b>${esc(m.nom)}</b><span class="m">${[m.type,m.prec,m.an||"",m.prop].filter(Boolean).map(esc).join(" · ")||"—"}</span></div>${s&&s[1]?`<span class="t w">${s[0]}</span>`:""}<span class="ch">›</span></div>`};
+const mlist=()=>{const q=norm(fq),ms=MS().filter(m=>(!fo||m.prop===fo)&&(!q||norm(m.nom+" "+m.prec+" "+m.type+" "+m.note).includes(q)));
+return`<div class="m">${ms.length} machine(s)</div>`+S.cats.filter(c=>ok(c.n)).map(c=>{const a=ms.filter(m=>m.cat===c.n).sort((x,y)=>c.t.indexOf(x.type)-c.t.indexOf(y.type)||0);
+const ix=m=>{const i=c.t.indexOf(m.type);return i<0?999:i};a.sort((x,y)=>ix(x)-ix(y));
+return a.length?`<h2 class="mh">${esc(c.n)} (${a.length})</h2><div class="ml">${a.map(mrow).join("")}</div>`:""}).join("")};
 function mach(){if(vid&&mb(vid))return fiche(mb(vid));
-const ms=MS().filter(m=>!fo||m.prop===fo),owners=[...new Set(S.m.map(m=>m.prop).filter(Boolean))];
-return chips()+`<details${editId?" open":""}><summary>${editId?"✎ Modifier la machine":"＋ Ajouter une machine"}</summary>${mfm()}</details>
-<details${mg?" open":""}><summary>⚙ Gérer les catégories et les types</summary><form id="fl"><label>Je crée…<select name="kind"><option value="cat">une catégorie</option><option value="type">un type</option></select></label><label>Dans la catégorie (pour un type)<select name="pc">${opts(S.cats.map(c=>c.n))}</select></label><label>Nom<input name="nom" required></label><button class="b">Créer</button></form>
-<p class="m">Renommez dans les champs, réordonnez avec ↑ ↓ (l’ordre est repris partout), ✕ supprime un élément inutilisé.</p>${mgmt()}</details>
-<div class="r"><span class="m">${ms.length} machine(s)</span><select data-f="1" style="width:auto"><option value="">Tous propriétaires</option>${owners.map(o=>`<option${o===fo?" selected":""}>${esc(o)}</option>`).join("")}</select></div>`+
-S.cats.filter(c=>ok(c.n)).map(c=>{const a=ms.filter(m=>m.cat===c.n);if(!a.length)return"";const g=[...c.t,""].map(t=>{const b=a.filter(m=>t?m.type===t:!c.t.includes(m.type));return b.length?`<div class="m" style="margin:8px 0 4px;font-weight:600">${t?esc(t):"Sans type"} (${b.length})</div>`+b.map(mcard).join(""):""}).join("");return`<h2>${esc(c.n)} (${a.length})</h2>`+g}).join("")}
+const owners=[...new Set(S.m.map(m=>m.prop).filter(Boolean))],sa=editId||pa;
+return chips()+`<div class="tb"><button class="b${sa?"":" s"}" data-a="tpa">${editId?"✎ Modification en cours":"＋ Ajouter une machine"}</button><button class="b${mg?"":" s"}" data-a="tmg">⚙ Catégories / types</button></div>`+
+(sa?mfm():"")+(mg?`<form id="fl"><label>Je crée…<select name="kind"><option value="cat">une catégorie</option><option value="type">un type</option></select></label><label>Dans la catégorie (pour un type)<select name="pc">${opts(S.cats.map(c=>c.n))}</select></label><label>Nom<input name="nom" required></label><button class="b">Créer</button></form>
+<p class="m">Renommez dans les champs, réordonnez avec ↑ ↓ (l’ordre est repris partout), ✕ supprime un élément inutilisé.</p>${mgmt()}`:"")+
+`<div class="sr"><input data-q="1" type="search" placeholder="🔎 Rechercher une machine…" value="${esc(fq)}"><select data-f="1"><option value="">Tous propriétaires</option>${owners.map(o=>`<option${o===fo?" selected":""}>${esc(o)}</option>`).join("")}</select></div><div id="ml">${mlist()}</div>`}
 function fiche(m){const is=hist(S.i.filter(x=>x.mid===m.id)),ps=todo().filter(p=>p.mid===m.id),s=m.iv>0?st(m):null;
-return`<div class="ac" style="margin:0 0 10px"><button class="b s" data-a="back">← Retour</button><button class="b s" data-a="em" data-id="${m.id}">✎ Modifier</button><button class="b s" data-a="xl" data-id="${m.id}">⬇ Export Excel</button></div>
+return`<div class="ac" style="margin:0 0 10px"><button class="b s" data-a="back">← Retour</button><button class="b s" data-a="em" data-id="${m.id}">✎ Modifier</button><button class="b s" data-a="xl" data-id="${m.id}">⬇ Export Excel</button><button class="b d" data-a="dm" data-id="${m.id}">${armed===m.id?"Confirmer ?":"Supprimer"}</button></div>
 <div class="c"><div class="r"><b style="font-size:1.1rem">${esc(m.nom)}</b><span class="t">${esc(m.cat)}</span></div><div class="m">${meta(m)}</div>
 <div class="ac"><label>Compteur (${un(m)})<input class="hh" type="number" min="0" data-h="${m.id}" value="${m.h}"></label>${s?`<span class="t ${s[1]?"w":""}">Entretien : ${s[0]}</span><span class="m">tous les ${m.iv} ${un(m)} · dernier à ${m.last}</span><button class="b s" data-a="done" data-id="${m.id}">✔ Entretien fait</button>`:'<span class="m">Pas d’entretien programmé au compteur</span>'}</div></div>
 <div class="g"><div class="c"><div class="k">${eur(is.reduce((a,x)=>a+x.c,0))}</div><div class="m">coûts cumulés (${is.length} interventions)</div></div><div class="c"><div class="k">${ps.length}</div><div class="m">à prévoir (${eur(ps.reduce((a,p)=>a+p.c,0))})</div></div></div>
@@ -199,7 +207,7 @@ add("Historique",[["Machine","Catégorie","Date","Type","Description","Coût (�
 if(!only)add("Stock",[["Article","Catégorie","Quantité","Unité","Seuil"],...S.s.map(x=>[x.nom,x.cat,x.q,x.u,x.min])]);
 try{XLSX.writeFile(wb,(only?"fiche-"+mn(only).replace(/[^\w-]+/g,"-"):"parc-materiel")+".xlsx")}catch(e){msg("Export impossible.")}}
 document.addEventListener("click",e=>{
-const t=e.target.closest("[data-tab]");if(t){tab=t.dataset.tab;armed=editId=vid=eiId=epId=mg=null;render();return}
+const t=e.target.closest("[data-tab]");if(t){tab=t.dataset.tab;armed=editId=vid=eiId=epId=mg=pa=null;render();return}
 const c=e.target.closest("[data-c]");if(c){fc=c.dataset.c;armed=null;render();return}
 const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a,id=b.dataset.id;
 if(a==="xl"){xl(id);return}
@@ -207,7 +215,9 @@ if(a==="logout"){AUTH.signOut();return}
 if(a==="fiche"){vid=id;render();scrollTo(0,0);return}
 if(a==="back"){vid=null;render();return}
 if(a==="em"){editId=id;vid=null;tab="mach";render();scrollTo({top:0,behavior:"smooth"});return}
-if(a==="cancel"){editId=null;render();return}
+if(a==="cancel"){editId=null;pa=false;render();return}
+if(a==="tpa"){if(editId||pa){editId=null;pa=false}else{pa=true;mg=false}render();return}
+if(a==="tmg"){mg=!mg;if(mg){pa=false;editId=null}render();return}
 if(a==="ei"){eiId=id;render();return}
 if(a==="ecancel"){eiId=null;render();return}
 if(a==="ep"){epId=id;render();return}
@@ -225,8 +235,9 @@ const m=mb(p.mid);if(m&&p.k==="E"&&m.iv>0)m.last=m.h}
 else if(a==="dp")S.p=S.p.filter(x=>x.id!==id);
 else if(a==="di")S.i=S.i.filter(x=>x.id!==id);
 else if(a==="dm"||a==="ds"){if(armed!==id){armed=id;render();return}
-if(a==="dm"){S.m=S.m.filter(x=>x.id!==id);S.i=S.i.filter(x=>x.mid!==id);S.p=S.p.filter(x=>x.mid!==id)}else S.s=S.s.filter(x=>x.id!==id);armed=null}
+if(a==="dm"){vid=null;S.m=S.m.filter(x=>x.id!==id);S.i=S.i.filter(x=>x.mid!==id);S.p=S.p.filter(x=>x.mid!==id)}else S.s=S.s.filter(x=>x.id!==id);armed=null}
 save();render()});
+document.addEventListener("input",e=>{if(e.target.dataset.q!==undefined){fq=e.target.value;const o=document.getElementById("ml");if(o)o.innerHTML=mlist()}});
 document.addEventListener("change",e=>{const d=e.target.dataset;
 if(d.h){mb(d.h).h=+e.target.value||0}else if(d.cs){const c=S.cats.find(x=>x.n===e.target.value);e.target.form.elements.namedItem("type").innerHTML='<option value="">— aucun —</option>'+opts(c?c.t:[],"");return}
 else if(d.imp){const f=e.target.files[0],inp=e.target;if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const wb=XLSX.read(rd.result,{type:"array"});if(!wb.Sheets["Machines"])throw 0;imp={wb,name:f.name};armed=null}catch(x){msg("Fichier non reconnu : il faut un export AgriParc avec une feuille « Machines ».")}inp.value="";render()};rd.readAsArrayBuffer(f);return}
@@ -235,7 +246,7 @@ if(v){if(d.rn==="c"){if(!S.cats.some(x=>x.n===v)){const o=c.n;c.n=v;S.m.forEach(
 document.addEventListener("submit",e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target)),n=e.target.id;
 if(n==="fa"){AUTH.signInWithEmailAndPassword(f.email.trim(),f.pw).catch(()=>msg("E-mail ou mot de passe incorrect."));return}
 if(n==="fm"){const m=mb(editId),v={nom:f.nom,type:f.type,cat:f.cat,prec:f.prec,an:+f.an||0,h:+f.h||0,u:f.u,iv:+f.iv||0,orig:f.orig,prop:f.prop,val:+f.val||0,note:f.note};
-if(m){if(!m.iv&&v.iv)v.last=v.h;Object.assign(m,v);editId=null}else S.m.push({id:uid(),...v,last:v.h})}
+if(m){if(!m.iv&&v.iv)v.last=v.h;Object.assign(m,v);editId=null}else S.m.push({id:uid(),...v,last:v.h});pa=false}
 if(n==="fl"){const x=f.nom.trim();if(x){if(f.kind==="cat"){if(!S.cats.some(c=>c.n===x))S.cats.push({n:x,t:[]})}else{const c=S.cats.find(c=>c.n===f.pc);if(c&&!c.t.includes(x))c.t.push(x)}}mg=true}
 if(n==="fq"){const x=S.p.find(y=>y.id===f.id);if(x)Object.assign(x,{mid:f.mid,k:f.k,desc:f.desc,d:f.d,c:+f.c||0});epId=null}
 if(n==="fe"){const x=S.i.find(y=>y.id===f.id);if(x)Object.assign(x,{mid:f.mid,t:f.t,d:f.d===pad(f.d0)?f.d0:(f.d||f.d0),desc:f.desc,c:+f.c||0});eiId=null}
